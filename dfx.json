@@ -1,26 +1,28 @@
 {
   "canisters": {
     "weather_app_backend": {
+      "type": "motoko",
       "main": "src/weather_app_backend/main.mo",
-      "type": "motoko"
+      "candid": "src/weather_app_backend/weather_app_backend.did",
+      "wasm": "src/weather_app_backend/weather_app_backend.wasm",
+      "build": "dfx build weather_app_backend"
     },
     "weather_app_frontend": {
-      "dependencies": [
-        "weather_app_backend"
-      ],
-      "source": [
-        "src/weather_app_frontend/dist"
-      ],
       "type": "assets",
-      "workspace": "weather_app_frontend"
+      "source": ["src/weather_app_frontend/dist"],
+      "build": "npm install && npm run build"
     }
   },
-  "defaults": {
-    "build": {
-      "args": "",
-      "packtool": ""
+  "dfx": "0.24.3",
+  "networks": {
+    "local": {
+      "bind": "127.0.0.1:4943",
+      "type": "ephemeral"
+    },
+    "ic": {
+      "providers": ["https://ic0.app"],
+      "type": "persistent"
     }
   },
-  "output_env_file": ".env",
   "version": 1
 }

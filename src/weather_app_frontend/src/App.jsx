@@ -1,31 +1,61 @@
-import { useState } from 'react';
-import { weather_app_backend } from 'declarations/weather_app_backend';
+import React, { useState } from "react";
+import axios from "axios";
+import "./index.scss";
 
-function App() {
-  const [greeting, setGreeting] = useState('');
+const App = () => {
+    const [city, setCity] = useState("");
+    const [weather, setWeather] = useState(null);
+    const [error, setError] = useState("");
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    const name = event.target.elements.name.value;
-    weather_app_backend.greet(name).then((greeting) => {
-      setGreeting(greeting);
-    });
-    return false;
-  }
+    const fetchWeather = async () => {
+        setError(""); // Reset error message
 
-  return (
-    <main>
-      <img src="/logo2.svg" alt="DFINITY logo" />
-      <br />
-      <br />
-      <form action="#" onSubmit={handleSubmit}>
-        <label htmlFor="name">Enter your name: &nbsp;</label>
-        <input id="name" alt="Name" type="text" />
-        <button type="submit">Click Me!</button>
-      </form>
-      <section id="greeting">{greeting}</section>
-    </main>
-  );
-}
+        if (!city.trim()) {
+            setError("Please enter a city name.");
+            return;
+        }
+
+        console.log("Fetching weather for:", city);
+
+        try {
+            const response = await axios.get(`http://localhost:5000/weather?city=${city}`);
+            console.log("Weather API Response:", response.data);
+            setWeather(response.data);
+        } catch (err) {
+            console.error("Weather API Error:", err);
+            setError("Could not fetch weather. Please try again.");
+            setWeather(null);
+        }
+    };
+
+    return (
+        <div className="app-container">
+            <h1>🌤️ ICP Weather App</h1>
+            <input
+                type="text"
+                placeholder="Enter city name"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+            />
+            <button onClick={fetchWeather}>Get Weather</button>
+
+            {error && <p className="error">{error}</p>}
+
+            {weather && (
+                <div className="weather-info">
+                    <h2>
+                        {weather.name}, {weather.sys.country}
+                    </h2>
+                    <img
+                        src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}.png`}
+                        alt={weather.weather[0].description}
+                    />
+                    <p>{weather.main.temp}°C</p>
+                    <p>{weather.weather[0].description}</p>
+                </div>
+            )}
+        </div>
+    );
+};
 
 export default App;

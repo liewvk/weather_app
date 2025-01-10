@@ -1,0 +1,26 @@
+{
+  "canisters": {
+    "weather_app_backend": {
+      "main": "src/weather_app_backend/main.mo",
+      "type": "motoko"
+    },
+    "weather_app_frontend": {
+      "dependencies": [
+        "weather_app_backend"
+      ],
+      "source": [
+        "src/weather_app_frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "weather_app_frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
